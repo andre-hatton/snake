@@ -9,7 +9,7 @@
 		android:title="@string/difficulty_title" >
 	</ListPreference>
 	<ListPreference
-		android:defaultValue="Sur les 4 côtés"
+		android:defaultValue="Autour du serpent"
 		android:entries="@array/joystick"
 		android:entryValues="@array/joystick"
 		android:key="joystick"

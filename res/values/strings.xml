@@ -20,9 +20,9 @@
 	<string name="joystick_summary">Choisisser les touches directionnelles</string>
 	<string name="joystick_title">Touche de direction</string>
 	<string-array name="joystick">
+		<item>Autour du serpent</item>
 		<item>Sur les 4 côtés</item>
 		<item>Droite et gauche</item>
 		<item>Par glissement</item>
-		<item>Autour</item>
 	</string-array>
 </resources>

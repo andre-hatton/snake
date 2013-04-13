@@ -69,7 +69,7 @@ public class MainActivity extends Activity
 		/* recuperation des preferences */
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		difficulty = preferences.getString("difficulty", "Normal");
-		joystick_str = preferences.getString("joystick", "4 coins");
+		joystick_str = preferences.getString("joystick", "autour du serpent");
 		if (difficulty.equals(getResources().getString(R.string.lent)))
 			vitesse = 1;
 		else if (difficulty.equals(getResources().getString(R.string.normal)))
@@ -86,7 +86,7 @@ public class MainActivity extends Activity
 		{
 			joystick = 3;
 		}
-		else if (joystick_str.toLowerCase().equals("autour"))
+		else if (joystick_str.toLowerCase().equals("autour du serpent"))
 		{
 			joystick = 4;
 		}

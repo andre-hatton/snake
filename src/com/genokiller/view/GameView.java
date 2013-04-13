@@ -106,7 +106,7 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 	/**
 	 * image à afficher (pomme, ciseau, moins, plus)
 	 */
-	private Bitmap				apple, cut, less, more;
+	private Bitmap				apple, cut, less, more, potion;
 	/**
 	 * preference de l'utilisateur pour la vitesse de deplacement et le joystick)
 	 */
@@ -155,7 +155,7 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 	/**
 	 * Nombre de bonus possible
 	 */
-	private final int type_bonus = 3;
+	private final int			type_bonus			= 4;
 	/**
 	 * bonus en cours
 	 */
@@ -168,6 +168,10 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 	 * previens que le bonus plus ou moins est actif
 	 */
 	private boolean bonus_plus_moins = false;
+	/**
+	 * previens que la potion est en cours
+	 */
+	private boolean				bonus_potion		= false;
 	/**
 	 * Objet pour boite de dialogue
 	 */
@@ -222,6 +226,7 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 		cut = BitmapFactory.decodeResource(getResources(), R.drawable.cut);
 		less = BitmapFactory.decodeResource(getResources(), R.drawable.less);
 		more = BitmapFactory.decodeResource(getResources(), R.drawable.more);
+		potion = BitmapFactory.decodeResource(getResources(), R.drawable.potion);
 		/* Initialisation des variables de base */
 		lost = false;						// pas perdu encore
 		hasSurface = false; // pas de surface
@@ -235,6 +240,7 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 		lucky = false;						// pas d'objet bonus
 		lucky_ok = false;					// pas d'objet chance en cours
 		bonus_plus_moins = false;			// pas de bonus plus ou moins
+		bonus_potion = false; // pas de potion en cours
 		end_lucky = TIME;					// durée de l'apparition du bonus initialiser
 		tmp_luck = ZEROS;					// compteur du temps d'apparition du bonus
 		bonus = ZEROS;						// type du bonus en cours
@@ -244,7 +250,8 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 		{
 			try
 			{
-				gameThread.start();
+				if (gameThread.getState() != Thread.State.RUNNABLE)
+					gameThread.start();
 			}
 			catch (IllegalThreadStateException e)
 			{
@@ -472,7 +479,7 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 		if(canvas == null)
 			return;
 		/* si aucun bonus n'existe on tante la chance d'en avoir un */
-		if ((int) (Math.random() * luck + 1) == nb_find && !lucky_ok && snake.size() > 4 && !bonus_plus_moins)
+		if ((int) (Math.random() * luck + 1) == nb_find && !lucky_ok && snake.size() > 4 && !bonus_plus_moins && !bonus_potion)
 		{
 			lucky = true;
 			lucky_ok = true;
@@ -520,7 +527,10 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 			{
 				try
 				{
-					snake.set(0, new Doublon(x, y));
+					if (snake.size() == 0)
+						snake.add(0, new Doublon(x, y));
+					else
+						snake.set(0, new Doublon(x, y));
 				}
 				catch (IndexOutOfBoundsException e)
 				{
@@ -583,7 +593,10 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 				{
 					paint.setColor(Color.argb(255, 0, 255, 255));
 					canvas.drawRect((float) snake.get(i).getX(), (float) snake.get(i).getY(), (float) snake.get(i).getX() + SIZE, (float) snake.get(i).getY() + SIZE, paint);
-					paint.setColor(Color.LTGRAY);
+					if (bonus_potion)
+						paint.setColor(Color.CYAN);
+					else
+						paint.setColor(Color.LTGRAY);
 				}
 				else
 					canvas.drawRect((float) snake.get(i).getX(), (float) snake.get(i).getY(), (float) snake.get(i).getX() + SIZE, (float) snake.get(i).getY() + SIZE, paint);
@@ -613,15 +626,18 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 			{
 				switch(bonus)
 				{
-				case 1:
-					canvas.drawBitmap(cut, lucky_x, lucky_y, paint);
-					break;
-				case 2:
-					canvas.drawBitmap(less, lucky_x, lucky_y, paint);
-					break;
-				case 3:
-					canvas.drawBitmap(more, lucky_x, lucky_y, paint);
-					break;
+					case 1:
+						canvas.drawBitmap(cut, lucky_x, lucky_y, paint);
+						break;
+					case 2:
+						canvas.drawBitmap(less, lucky_x, lucky_y, paint);
+						break;
+					case 3:
+						canvas.drawBitmap(more, lucky_x, lucky_y, paint);
+						break;
+					case 4:
+						canvas.drawBitmap(potion, lucky_x, lucky_y, paint);
+						break;
 				}
 			}
 			if(snake == null)
@@ -632,7 +648,10 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 				// on met la position x, y comme la tete
 				try
 				{
-					snake.set(0, new Doublon(x, y));
+					if (snake.size() == 0)
+						snake.add(0, new Doublon(x, y));
+					else
+						snake.set(0, new Doublon(x, y));
 				}
 				catch (IndexOutOfBoundsException e)
 				{
@@ -705,7 +724,10 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 					{
 						paint.setColor(Color.argb(255, 0, 255, 255));
 						canvas.drawRect((float) snake.get(i).getX(), (float) snake.get(i).getY(), (float) snake.get(i).getX() + SIZE, (float) snake.get(i).getY() + SIZE, paint);
-						paint.setColor(Color.LTGRAY);
+						if (bonus_potion)
+							paint.setColor(Color.CYAN);
+						else
+							paint.setColor(Color.LTGRAY);
 					}
 					else
 						canvas.drawRect((float) snake.get(i).getX(), (float) snake.get(i).getY(), (float) snake.get(i).getX() + SIZE, (float) snake.get(i).getY() + SIZE, paint);
@@ -755,11 +777,12 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 							break;
 						}
 						/* si un bonus plus ou moins est actif on enleve 1 au nombre de pomme mangé avant la fin du bonus */
-						if(bonus_plus_moins)
+						if (bonus_plus_moins || bonus_potion)
 							reste_bonus--;
 						/* si le bonus est achevé on reinitialise ce bonus */
 						if(reste_bonus <= 0)
 						{
+							bonus_potion = false;
 							bonus_plus_moins = false;
 							reste_bonus = 3;
 						}
@@ -826,6 +849,16 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 							bonus_plus_moins = true;
 						}
 					}
+					else if (lucky_ok && bonus == 4)
+					{
+						if (snake.get(0).getX() == lucky_x && snake.get(0).getY() == lucky_y)
+						{
+							lucky_ok = false;
+							end_lucky = TIME;
+							tmp_luck = ZEROS;
+							bonus_potion = true;
+						}
+					}
 				}
 			}
 
@@ -849,6 +882,8 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 	 */
 	private boolean mord(ArrayList<Doublon> snake)
 	{
+		if (bonus == 4)
+			return false;
 		Doublon d = new Doublon(snake.get(0).getX(), snake.get(0).getY());
 
 		for (int j = 1; j < snake.size(); j++)
