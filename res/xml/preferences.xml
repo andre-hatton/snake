@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+	<ListPreference
+		android:defaultValue="Normal"
+		android:entries="@array/difficulty"
+		android:entryValues="@array/difficulty"
+		android:key="difficulty"
+		android:summary="@string/difficulty_summary"
+		android:title="@string/difficulty_title" >
+	</ListPreference>
+	<ListPreference
+		android:defaultValue="Sur les 4 côtés"
+		android:entries="@array/joystick"
+		android:entryValues="@array/joystick"
+		android:key="joystick"
+		android:summary="@string/joystick_summary"
+		android:title="@string/joystick_title" >
+	</ListPreference>
+</PreferenceScreen>

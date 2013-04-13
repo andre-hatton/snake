@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Snake</string>
+	<string name="hello_world">Hello world!</string>
+	<string name="menu_settings">Settings</string>
+	<string name="menu_rejouer">Recommencer</string>
+	<string name="difficulty_summary">Choisisser la vitesse de serpent</string>
+	<string name="difficulty_title">Vitesse du serpent</string>
+	<string name="menu_pref">Mes préférences</string>
+	<string name="lent">Lent</string>
+	<string name="normal">Normal</string>
+	<string name="rapide">Rapide</string>
+	<string name="most_rapide">Très Rapide</string>
+	<string-array name="difficulty">
+		<item>Lent</item>
+		<item>Normal</item>
+		<item>Rapide</item>
+		<item>Très Rapide</item>
+	</string-array>
+	<string name="joystick_summary">Choisisser les touches directionnelles</string>
+	<string name="joystick_title">Touche de direction</string>
+	<string-array name="joystick">
+		<item>Sur les 4 côtés</item>
+		<item>Droite et gauche</item>
+		<item>Par glissement</item>
+		<item>Autour</item>
+	</string-array>
+</resources>
