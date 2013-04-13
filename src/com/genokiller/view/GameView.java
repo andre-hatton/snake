@@ -13,13 +13,13 @@ import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.genokiller.snake.MainActivity;
 import com.genokiller.snake.R;
+import com.genokiller.utils.Angle;
 import com.genokiller.utils.Doublon;
 
 
@@ -35,7 +35,13 @@ import com.genokiller.utils.Doublon;
  */
 public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Callback
 {
+	/**
+	 * nom du tag pour le debugage
+	 */
 	public static final String	tag					= "SNAKE";
+	/**
+	 * Lien vers l'activité
+	 */
 	private MainActivity mainActivity;
 	/**
 	 * Holdre de la surface
@@ -162,7 +168,13 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 	 * previens que le bonus plus ou moins est actif
 	 */
 	private boolean bonus_plus_moins = false;
+	/**
+	 * Objet pour boite de dialogue
+	 */
 	AlertDialog.Builder			d;
+	/**
+	 * Boite de dialogue
+	 */
 	AlertDialog					dl;
 	/**
 	 * construit le vue sur un contexte
@@ -250,7 +262,7 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 	}
 
 	/**
-	 * Démarre un thread
+	 * Démarre un thread si null ou terminé
 	 */
 	public void resume()
 	{
@@ -363,45 +375,40 @@ public class GameView extends SurfaceView implements Runnable, SurfaceHolder.Cal
 	
 			// calcul de la difference de longueur entre x et y (pour faire une
 			// gille 1/1)
-			/**
-			 * @var double hauteur sur largeur
-			 */
-			double diff = (double) height / (double) width;
-	
-			// position x a partir de la droite
-			double diffX = width - ptx;
-			// position y a partir du bas
-			double diffY = height - pty;
+
 			/* memorise l'endroit ou l'utilisateur à appuyer sur l'ecran */
 			if (action == MotionEvent.ACTION_DOWN)
 			{
 				g_x = ptx;
 				g_y = pty;
 			}
+			Angle a = new Angle();
+
 			/* selon le type du joystick on change la façon de bouger le serpent */
 			/* Cas ou on utilise les 4 coins */
 			if (action == MotionEvent.ACTION_UP && getJoystick() == 1)
 			{
-				if ((ptx < centerX && pty < centerY && ptx * diff < pty) && direction != 1 || (ptx < centerX && pty > centerY && ptx * diff < diffY) && direction != 1)
+				double angle = a.getAngleRad(new Doublon(centerX, centerY), new Doublon(ptx, pty));
+				if ((angle > 315 || angle <= 45) && direction != 1)
 					direction = 3;
-				else if ((ptx < centerX && pty < centerY && ptx * diff > pty) && direction != 2 || (ptx > centerX && pty < centerY && diffX * diff > pty) && direction != 2)
+				else if (angle <= 315 && angle > 225 && direction != 2)
 					direction = 0;
-				else if ((ptx > centerX && pty > centerY && ptx * diff < pty) && direction != 0 || (ptx < centerX && pty > centerY && ptx * diff > diffY) && direction != 0)
+				else if (angle > 45 && angle <= 135 && direction != 0)
 					direction = 2;
-				else if ((ptx > centerX && pty > centerY && ptx * diff > pty) && direction != 3 || (ptx > centerX && pty < centerY && diffX * diff < pty) && direction != 3)
+				else if (angle > 135 && angle <= 225 && direction != 3)
 					direction = 1;
 			}
 			
 			else if (action == MotionEvent.ACTION_UP && getJoystick() == 4)
 			{
-				Log.d(tag, ptx +" " + pty + " " + x + " " + y + " " + ptx * diff +" " + direction);
-				if ((ptx < x + SIZE / 2 && pty < y + SIZE / 2 && ptx * diff < pty) && direction != 1 || (ptx < x + SIZE / 2 && pty > y + SIZE / 2 && ptx * diff < pty) && direction != 1)
+				double angle = a.getAngleRad(new Doublon(x + SIZE / 2, y + SIZE / 2), new Doublon(ptx, pty));
+				if ((angle > 315 || angle <= 45) && direction != 1)
 					direction = 3;
-				else if ((ptx < x + SIZE / 2 && pty < y + SIZE / 2 && ptx * diff > pty) && direction != 2 || (ptx > x + SIZE / 2 && pty < y + SIZE / 2 && ptx * diff > pty) && direction != 2)
+				else if (angle <= 315 && angle > 225 && direction != 2)
 					direction = 0;
-				else if ((ptx > x + SIZE / 2 && pty > y + SIZE / 2 && ptx * diff < pty) && direction != 0 || (ptx < x + SIZE / 2 && pty > y + SIZE / 2 && ptx * diff > pty) && direction != 0)
+				else if (angle > 45 && angle <= 135 && direction != 0)
 					direction = 2;
-				else if ((ptx > x + SIZE / 2 && pty > y + SIZE / 2 && ptx * diff > pty) && direction != 3 || (ptx > x + SIZE / 2 && pty < y + SIZE / 2 && diffX * diff < pty) && direction != 3)
+				else if (angle > 135 && angle <= 225 && direction != 3)
 					direction = 1;
 			}
 			
